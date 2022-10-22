@@ -1,6 +1,5 @@
 package ndoja;
 
-import java.io.IOException;
 
 /**
  * Hello world!
@@ -8,10 +7,10 @@ import java.io.IOException;
  */
 public class App 
 {
-    public static void main( String[] args ) throws IOException
+    public static void main( String[] args ) throws Exception
     {
-        Client client = new Client();
-        client.connetti();
-        client.comunica();
+        Client cliente = new Client();
+        //cliente.connetti();
+        cliente.comunica();
     }
 }

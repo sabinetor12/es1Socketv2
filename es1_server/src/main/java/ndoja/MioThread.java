@@ -20,30 +20,37 @@ public class MioThread extends Thread {
     }
 
     public void comunica() {
-
         try {
             BufferedReader inDalClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            DataOutputStream outVersoClient = new DataOutputStream(client.getOutputStream());
-            do {
-                String strRicevuta = inDalClient.readLine();
-                if (strRicevuta.equals("SPEGNI")) {
-                    outVersoClient.writeBytes("sto spegnendo" + '\n');
+            DataOutput outVersoClient = new DataOutputStream(client.getOutputStream());
+            System.out.println("3 benvenuto client, scrivi una frase e la trasformo in maiscuolo. Attendo ...");
+            for (;;) {
+                String StringaRicevuta = inDalClient.readLine();
+                if (!StringaRicevuta.equals("fine") && !StringaRicevuta.equals("spegni")) {
+                    System.out.println("6 ricevuta la stringa dal cliente: " + StringaRicevuta);
+                    String StringaModificata = StringaRicevuta.toUpperCase();
+                    System.out.println("7 invio la stringa modificata al client ...");
+                    outVersoClient.writeBytes(StringaModificata + '\n');
+                } else if (StringaRicevuta.equals("spegni")) {
                     for (Socket i : S) {
-                        i.close();
+                        DataOutputStream nb = new DataOutputStream(i.getOutputStream());
+                        nb.writeBytes("spegni" + '\n');
+                        //i.close();
                     }
+                    System.out.println("CHIUSO SERVER");
                     server.close();
                     break;
                 } else {
-                    System.out.println("stringa ricevuta: " + strRicevuta);
-                    String strModificata = strRicevuta.toUpperCase();
-                    outVersoClient.writeBytes(strModificata + '\n');
-                    System.out.println("stringa inviata");
+                    break;
                 }
 
-            } while (true);
-
+            }
         } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("E22");
+            System.exit(1);
         }
+        // server.close();
     }
 
 }
