@@ -12,34 +12,31 @@ public class Client {
     Socket socket;
     String stringaUtente;
     String stringaServer;
-    
-    protected void connetti(){
-        try {
-            tastiera = new BufferedReader(new InputStreamReader(System.in));
-            socket= new Socket(ipServer,portaServer);
 
-            out= new DataOutputStream(socket.getOutputStream());
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            
-        } catch (Exception e) {
-            System.out.println("errore");
-            System.exit(0);
-        }
+    protected void connetti() throws IOException {
+        tastiera = new BufferedReader(new InputStreamReader(System.in));
+        socket = new Socket(ipServer, portaServer);
+
+        out = new DataOutputStream(socket.getOutputStream());
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
-    public void comunica(){
-        try {
+    public void comunica() throws IOException {
+
+        while(true){
             System.out.println("scrivi muoviti");
             stringaUtente = tastiera.readLine();
+            if(stringaUtente.equals("FINE")){
+                socket.close();
+                return;
+            }
             System.out.println("mando");
-            out.writeBytes(stringaUtente+'\n');
+            out.writeBytes(stringaUtente + '\n');
             stringaServer = in.readLine();
-            System.out.println("risposta: "+ stringaServer);
-            System.out.println("chiudo");
-            socket.close();
-        } catch (Exception e) {
-            System.out.println("errore");
-            System.exit(0);
+            System.out.println("risposta: " + stringaServer);
+            if(stringaUtente.equals("SPEGNI")){
+                return;
+            }
         }
         
     }

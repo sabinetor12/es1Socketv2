@@ -2,31 +2,48 @@ package ndoja;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class MioThread extends Thread {
     Socket client;
+    ArrayList<Socket> S;
+    ServerSocket server;
 
-    public MioThread(Socket client) {
+    public MioThread(Socket client, ArrayList<Socket> S, ServerSocket server) {
         this.client = client;
+        this.S = S;
+        this.server = server;
     }
 
     public void run() {
-        comunica(client);
+        comunica();
     }
 
-    public void comunica(Socket client) {
-        System.out.println("sono fuori");
+    public void comunica() {
+
         try {
-            System.out.println("ci sono");
             BufferedReader inDalClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
             DataOutputStream outVersoClient = new DataOutputStream(client.getOutputStream());
-            String strRicevuta = inDalClient.readLine();
-            System.out.println("stringa ricevuta: " + strRicevuta);
-            String strModificata = strRicevuta.toUpperCase();
-            outVersoClient.writeBytes(strModificata + '\n');
-            System.out.println("stringa inviata");
-            client.close();
-        } catch (Exception e) {}
+            do {
+                String strRicevuta = inDalClient.readLine();
+                if (strRicevuta.equals("SPEGNI")) {
+                    outVersoClient.writeBytes("sto spegnendo" + '\n');
+                    for (Socket i : S) {
+                        i.close();
+                    }
+                    server.close();
+                    break;
+                } else {
+                    System.out.println("stringa ricevuta: " + strRicevuta);
+                    String strModificata = strRicevuta.toUpperCase();
+                    outVersoClient.writeBytes(strModificata + '\n');
+                    System.out.println("stringa inviata");
+                }
+
+            } while (true);
+
+        } catch (Exception e) {
+        }
     }
 
 }
