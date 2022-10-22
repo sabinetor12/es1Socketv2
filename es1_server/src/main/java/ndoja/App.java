@@ -11,7 +11,7 @@ public class App
         Server server = new Server();
         try {
             server.connetti();
-            server.comunica();
+            //server.comunica();
         } catch (Exception e) {}
     }
 }
